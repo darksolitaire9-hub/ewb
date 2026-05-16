@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodBoard Pro - Mental Health Tracking Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --bg-light: #F9FAFB;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --white: #FFFFFF;
+            --red: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2563EB 100%);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .view-toggle button {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--white);
+            cursor: pointer;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle button.active {
+            background: var(--white);
+            color: var(--primary);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Mood Slider */
+        .mood-slider-container {
+            margin: 2rem 0;
+        }
+
+        .mood-value {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .mood-label {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(to right, #EF4444, #F59E0B, #10B981);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--white);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--white);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        /* Emotion Tags */
+        .emotion-tags {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .emotion-tag {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .emotion-tag:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .emotion-tag.selected {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        .emotion-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .file-name {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #059669;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* History */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--bg-light);
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-date {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .history-mood {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .history-emotions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .history-emotion-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .history-notes {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Therapist View */
+        .client-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .client-card {
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .client-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .client-card.selected {
+            border-color: var(--primary);
+            background: rgba(30, 58, 138, 0.05);
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .client-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .client-status {
+            padding: 0.25rem 0.75rem;
+            background: var(--secondary);
+            color: var(--white);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .client-info {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .client-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: var(--secondary);
+        }
+
+        .trend-down {
+            color: var(--red);
+        }
+
+        /* Chart */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        /* AI Insights */
+        .insights-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .insight-item {
+            padding: 1rem;
+            background: var(--bg-light);
+            border-left: 4px solid var(--accent);
+            border-radius: 0.5rem;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-text {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        /* Patterns */
+        .pattern-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .pattern-item {
+            padding: 1rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .pattern-icon {
+            font-size: 2rem;
+        }
+
+        .pattern-content {
+            flex: 1;
+        }
+
+        .pattern-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .pattern-description {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .emotion-tags {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .client-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🎭</span>
+                <span>MoodBoard Pro</span>
+            </div>
+            <div class="view-toggle">
+                <button id="clientViewBtn" class="active">Client View</button>
+                <button id="therapistViewBtn">Therapist View</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Client View -->
+        <div id="clientView" class="view active">
+            <!-- Mood Entry Card -->
+            <div class="card">
+                <div class="card-header">
+                    📊 How are you feeling today?
+                </div>
+
+                <!-- Mood Slider -->
+                <div class="mood-slider-container">
+                    <div class="mood-value" id="moodValue">5</div>
+                    <div class="mood-label" id="moodLabel">Neutral</div>
+                    <div class="slider-wrapper">
+                        <input type="range" id="moodSlider" min="1" max="10" value="5">
+                        <div class="slider-labels">
+                            <span>😢 Low</span>
+                            <span>😊 High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emotion Tags -->
+                <div class="form-group">
+                    <label>Select your emotions:</label>
+                    <div class="emotion-tags" id="emotionTags">
+                        <div class="emotion-tag" data-emotion="Happy">
+                            <span class="emotion-icon">😊</span>
+                            Happy
+                        </div>
+                        <div class="emotion-tag" data-emotion="Sad">
+                            <span class="emotion-icon">😢</span>
+                            Sad
+                        </div>
+                        <div class="emotion-tag" data-emotion="Anxious">
+                            <span class="emotion-icon">😰</span>
+                            Anxious
+                        </div>
+                        <div class="emotion-tag" data-emotion="Angry">
+                            <span class="emotion-icon">😡</span>
+                            Angry
+                        </div>
+                        <div class="emotion-tag" data-emotion="Calm">
+                            <span class="emotion-icon">😌</span>
+                            Calm
+                        </div>
+                        <div class="emotion-tag" data-emotion="Tired">
+                            <span class="emotion-icon">😴</span>
+                            Tired
+                        </div>
+                        <div class="emotion-tag" data-emotion="Excited">
+                            <span class="emotion-icon">😃</span>
+                            Excited
+                        </div>
+                        <div class="emotion-tag" data-emotion="Depressed">
+                            <span class="emotion-icon">😔</span>
+                            Depressed
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="form-group">
+                    <label for="notes">Additional notes (optional):</label>
+                    <textarea id="notes" placeholder="Share what's on your mind..." maxlength="500"></textarea>
+                    <div class="char-count"><span id="charCount">0</span>/500</div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label>Upload an image (optional):</label>
+                    <div class="file-upload">
+                        <label for="imageUpload" class="file-upload-btn">
+                            📷 Choose Image
+                        </label>
+                        <input type="file" id="imageUpload" accept="image/*">
+                        <span class="file-name" id="fileName">No file chosen</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button class="btn btn-primary btn-block" id="submitMood">
+                    Submit Mood Entry
+                </button>
+            </div>
+
+            <!-- History Card -->
+            <div class="card">
+                <div class="card-header">
+                    📅 Your Mood History
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- History items will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Therapist View -->
+        <div id="therapistView" class="view">
+            <!-- Client List -->
+            <div class="card">
+                <div class="card-header">
+                    👥 Client Dashboard
+                </div>
+                <div class="client-list" id="clientList">
+                    <!-- Client cards will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Selected Client Details -->
+            <div id="clientDetails" style="display: none;">
+                <!-- Mood Trend Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        📈 Mood Trend - Last 7 Days
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="card">
+                    <div class="card-header">
+                        🤖 AI-Powered Insights
+                    </div>
+                    <div class="insights-grid" id="aiInsights">
+                        <!-- Insights will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Pattern Detection -->
+                <div class="card">
+                    <div class="card-header">
+                        🔍 Detected Patterns
+                    </div>
+                    <div class="pattern-list" id="patternList">
+                        <!-- Patterns will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            currentView: 'client',
+            selectedEmotions: [],
+            selectedClient: null,
+            moodChart: null
+        };
+
+        // Mock Data
+        const mockClients = [
+            {
+                id: 1,
+                name: 'Sarah Johnson',
+                lastEntry: '2026-05-16',
+                status: 'Active',
+                trend: 'up',
+                moodHistory: [
+                    { date: '2026-05-10', mood: 4, emotions: ['Anxious', 'Tired'] },
+                    { date: '2026-05-11', mood: 5, emotions: ['Calm', 'Tired'] },
+                    { date: '2026-05-12', mood: 6, emotions: ['Happy', 'Calm'] },
+                    { date: '2026-05-13', mood: 7, emotions: ['Happy', 'Excited'] },
+                    { date: '2026-05-14', mood: 6, emotions: ['Happy', 'Calm'] },
+                    { date: '2026-05-15', mood: 7, emotions: ['Happy', 'Excited'] },
+                    { date: '2026-05-16', mood: 8, emotions: ['Happy', 'Excited', 'Calm'] }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Mike Chen',
+                lastEntry: '2026-05-15',
+                status: 'Active',
+                trend: 'down',
+                moodHistory: [
+                    { date: '2026-05-10', mood: 7, emotions: ['Happy', 'Calm'] },
+                    { date: '2026-05-11', mood: 6, emotions: ['Calm'] },
+                    { date: '2026-05-12', mood: 6, emotions: ['Tired', 'Calm'] },
+                    { date: '2026-05-13', mood: 5, emotions: ['Tired', 'Anxious'] },
+                    { date: '2026-05-14', mood: 4, emotions: ['Sad', 'Tired'] },
+                    { date: '2026-05-15', mood: 4, emotions: ['Sad', 'Depressed'] },
+                    { date: '2026-05-16', mood: 3, emotions: ['Depressed', 'Anxious'] }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Emma Davis',
+                lastEntry: '2026-05-16',
+                status: 'Active',
+                trend: 'up',
+                moodHistory: [
+                    { date: '2026-05-10', mood: 5, emotions: ['Calm'] },
+                    { date: '2026-05-11', mood: 5, emotions: ['Calm', 'Tired'] },
+                    { date: '2026-05-12', mood: 6, emotions: ['Happy', 'Calm'] },
+                    { date: '2026-05-13', mood: 6, emotions: ['Happy'] },
+                    { date: '2026-05-14', mood: 7, emotions: ['Happy', 'Excited'] },
+                    { date: '2026-05-15', mood: 7, emotions: ['Happy', 'Calm'] },
+                    { date: '2026-05-16', mood: 8, emotions: ['Happy', 'Excited'] }
+                ]
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeMoodSlider();
+            initializeEmotionTags();
+            initializeFileUpload();
+            initializeNotes();
+            initializeViewToggle();
+            initializeClientView();
+            initializeTherapistView();
+            loadMoodHistory();
+        });
+
+        // Mood Slider
+        function initializeMoodSlider() {
+            const slider = document.getElementById('moodSlider');
+            const moodValue = document.getElementById('moodValue');
+            const moodLabel = document.getElementById('moodLabel');
+
+            slider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                updateMoodDisplay(value);
+            });
+
+            updateMoodDisplay(5);
+        }
+
+        function updateMoodDisplay(value) {
+            const moodValue = document.getElementById('moodValue');
+            const moodLabel = document.getElementById('moodLabel');
+
+            moodValue.textContent = value;
+
+            const labels = {
+                1: 'Very Low',
+                2: 'Low',
+                3: 'Somewhat Low',
+                4: 'Below Average',
+                5: 'Neutral',
+                6: 'Above Average',
+                7: 'Good',
+                8: 'Very Good',
+                9: 'Great',
+                10: 'Excellent'
+            };
+
+            moodLabel.textContent = labels[value];
+
+            // Color gradient
+            const colors = [
+                '#EF4444', '#F87171', '#FB923C', '#FBBF24',
+                '#FCD34D', '#FDE047', '#BEF264', '#86EFAC',
+                '#6EE7B7', '#10B981'
+            ];
+            moodValue.style.color = colors[value - 1];
+        }
+
+        // Emotion Tags
+        function initializeEmotionTags() {
+            const tags = document.querySelectorAll('.emotion-tag');
+            tags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    tag.classList.toggle('selected');
+                    const emotion = tag.dataset.emotion;
+                    
+                    if (tag.classList.contains('selected')) {
+                        state.selectedEmotions.push(emotion);
+                    } else {
+                        state.selectedEmotions = state.selectedEmotions.filter(e => e !== emotion);
+                    }
+                });
+            });
+        }
+
+        // File Upload
+        function initializeFileUpload() {
+            const fileInput = document.getElementById('imageUpload');
+            const fileName = document.getElementById('fileName');
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileName.textContent = e.target.files[0].name;
+                } else {
+                    fileName.textContent = 'No file chosen';
+                }
+            });
+        }
+
+        // Notes Character Count
+        function initializeNotes() {
+            const notes = document.getElementById('notes');
+            const charCount = document.getElementById('charCount');
+
+            notes.addEventListener('input', (e) => {
+                charCount.textContent = e.target.value.length;
+            });
+        }
+
+        // View Toggle
+        function initializeViewToggle() {
+            const clientViewBtn = document.getElementById('clientViewBtn');
+            const therapistViewBtn = document.getElementById('therapistViewBtn');
+            const clientView = document.getElementById('clientView');
+            const therapistView = document.getElementById('therapistView');
+
+            clientViewBtn.addEventListener('click', () => {
+                clientViewBtn.classList.add('active');
+                therapistViewBtn.classList.remove('active');
+                clientView.classList.add('active');
+                therapistView.classList.remove('active');
+                state.currentView = 'client';
+            });
+
+            therapistViewBtn.addEventListener('click', () => {
+                therapistViewBtn.classList.add('active');
+                clientViewBtn.classList.remove('active');
+                therapistView.classList.add('active');
+                clientView.classList.remove('active');
+                state.currentView = 'therapist';
+            });
+        }
+
+        // Client View - Submit Mood
+        function initializeClientView() {
+            const submitBtn = document.getElementById('submitMood');
+            submitBtn.addEventListener('click', submitMoodEntry);
+        }
+
+        function submitMoodEntry() {
+            const mood = parseInt(document.getElementById('moodSlider').value);
+            const notes = document.getElementById('notes').value;
+            const emotions = [...state.selectedEmotions];
+
+            if (emotions.length === 0) {
+                alert('Please select at least one emotion');
+                return;
+            }
+
+            const entry = {
+                date: new Date().toISOString(),
+                mood,
+                emotions,
+                notes,
+                timestamp: Date.now()
+            };
+
+            // Save to localStorage
+            let history = JSON.parse(localStorage.getItem('moodHistory') || '[]');
+            history.unshift(entry);
+            localStorage.setItem('moodHistory', JSON.stringify(history));
+
+            // Show success message
+            showSuccessMessage('Mood entry saved successfully! 🎉');
+
+            // Reset form
+            document.getElementById('moodSlider').value = 5;
+            updateMoodDisplay(5);
+            document.getElementById('notes').value = '';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('fileName').textContent = 'No file chosen';
+            
+            // Clear selected emotions
+            document.querySelectorAll('.emotion-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+            state.selectedEmotions = [];
+
+            // Reload history
+            loadMoodHistory();
+        }
+
+        function showSuccessMessage(message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'success-message';
+            msgDiv.textContent = message;
+            document.body.appendChild(msgDiv);
+
+            setTimeout(() => {
+                msgDiv.remove();
+            }, 3000);
+        }
+
+        function loadMoodHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('moodHistory') || '[]');
+
+            if (history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No mood entries yet. Start tracking your mood today!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyList.innerHTML = history.slice(0, 10).map(entry => {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <div class="history-date">${formattedDate}</div>
+                            <div class="history-mood" style="color: ${getMoodColor(entry.mood)}">${entry.mood}/10</div>
+                        </div>
+                        <div class="history-emotions">
+                            ${entry.emotions.map(e => `<span class="history-emotion-tag">${e}</span>`).join('')}
+                        </div>
+                        ${entry.notes ? `<div class="history-notes">${entry.notes}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getMoodColor(mood) {
+            const colors = [
+                '#EF4444', '#F87171', '#FB923C', '#FBBF24',
+                '#FCD34D', '#FDE047', '#BEF264', '#86EFAC',
+                '#6EE7B7', '#10B981'
+            ];
+            return colors[mood - 1];
+        }
+
+        // Therapist View
+        function initializeTherapistView() {
+            renderClientList();
+        }
+
+        function renderClientList() {
+            const clientList = document.getElementById('clientList');
+            
+            clientList.innerHTML = mockClients.map(client => {
+                const trendIcon = client.trend === 'up' ? '📈' : '📉';
+                const trendClass = client.trend === 'up' ? 'trend-up' : 'trend-down';
+                const avgMood = (client.moodHistory.reduce((sum, entry) => sum + entry.mood, 0) / client.moodHistory.length).toFixed(1);
+
+                return `
+                    <div class="client-card" data-client-id="${client.id}">
+                        <div class="client-header">
+                            <div class="client-name">${client.name}</div>
+                            <div class="client-status">${client.status}</div>
+                        </div>
+                        <div class="client-info">
+                            <div>Last entry: ${new Date(client.lastEntry).toLocaleDateString()}</div>
+                            <div class="client-trend ${trendClass}">
+                                ${trendIcon} Avg: ${avgMood}/10
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.client-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const clientId = parseInt(card.dataset.clientId);
+                    selectClient(clientId);
+                });
+            });
+        }
+
+        function selectClient(clientId) {
+            state.selectedClient = mockClients.find(c => c.id === clientId);
+            
+            // Update UI
+            document.querySelectorAll('.client-card').forEach(card => {
+                card.classList.remove('selected');
+                if (parseInt(card.dataset.clientId) === clientId) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Show details
+            document.getElementById('clientDetails').style.display = 'block';
+            
+            // Render chart
+            renderMoodChart();
+            
+            // Generate insights
+            generateAIInsights();
+            
+            // Detect patterns
+            detectPatterns();
+        }
+
+        function renderMoodChart() {
+            const ctx = document.getElementById('moodChart');
+            const client = state.selectedClient;
+
+            if (state.moodChart) {
+                state.moodChart.destroy();
+            }
+
+            const labels = client.moodHistory.map(entry => {
+                const date = new Date(entry.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            const data = client.moodHistory.map(entry => entry.mood);
+
+            state.moodChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Mood Score',
+                        data: data,
+                        borderColor: '#1E3A8A',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#1E3A8A',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1F2937',
+                            padding: 12,
+                            titleFont: {
+                                size: 14
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                stepSize: 2
+                            },
+                            grid: {
+                                color: '#E5E7EB'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateAIInsights() {
+            const client = state.selectedClient;
+            const insightsContainer = document.getElementById('aiInsights');
+            
+            const avgMood = (client.moodHistory.reduce((sum, entry) => sum + entry.mood, 0) / client.moodHistory.length).toFixed(1);
+            const trend = client.trend === 'up' ? 'improving' : 'declining';
+            const recentMood = client.moodHistory[client.moodHistory.length - 1].mood;
+            
+            // Count emotion frequencies
+            const emotionCounts = {};
+            client.moodHistory.forEach(entry => {
+                entry.emotions.forEach(emotion => {
+                    emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+                });
+            });
+            
+            const topEmotion = Object.keys(emotionCounts).reduce((a, b) => 
+                emotionCounts[a] > emotionCounts[b] ? a : b
+            );
+
+            const insights = [
+                {
+                    title: 'Overall Trend',
+                    text: `${client.name}'s mood is ${trend} with an average score of ${avgMood}/10 over the past week. Current mood: ${recentMood}/10.`
+                },
+                {
+                    title: 'Emotional Pattern',
+                    text: `Most frequently reported emotion: ${topEmotion}. This appears ${emotionCounts[topEmotion]} times in the last 7 days.`
+                },
+                {
+                    title: 'Recommendation',
+                    text: trend === 'up' 
+                        ? 'Continue current therapeutic approach. Client shows positive progress and engagement.'
+                        : 'Consider adjusting treatment plan. Schedule follow-up session to discuss recent challenges.'
+                },
+                {
+                    title: 'Engagement Level',
+                    text: 'Client is consistently logging mood entries, indicating high engagement with the therapeutic process.'
+                }
+            ];
+
+            insightsContainer.innerHTML = insights.map(insight => `
+                <div class="insight-item">
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-text">${insight.text}</div>
+                </div>
+            `).join('');
+        }
+
+        function detectPatterns() {
+            const client = state.selectedClient;
+            const patternList = document.getElementById('patternList');
+            
+            const patterns = [
+                {
+                    icon: '📊',
+                    title: 'Weekly Trend',
+                    description: client.trend === 'up' 
+                        ? 'Mood scores show consistent improvement throughout the week'
+                        : 'Mood scores show a declining pattern that requires attention'
+                },
+                {
+                    icon: '🕐',
+                    title: 'Consistency',
+                    description: 'Client logs entries regularly, showing commitment to self-monitoring'
+                },
+                {
+                    icon: '💭',
+                    title: 'Emotional Diversity',
+                    description: `Client reports ${new Set(client.moodHistory.flatMap(e => e.emotions)).size} different emotions, indicating emotional awareness`
+                }
+            ];
+
+            patternList.innerHTML = patterns.map(pattern => `
+                <div class="pattern-item">
+                    <div class="pattern-icon">${pattern.icon}</div>
+                    <div class="pattern-content">
+                        <div class="pattern-title">${pattern.title}</div>
+                        <div class="pattern-description">${pattern.description}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
