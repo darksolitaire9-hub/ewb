@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  eslint: {
+    // Allow production builds to complete even with ESLint errors
+    ignoreDuringBuilds: false,
+  },
 }
 
 module.exports = nextConfig
