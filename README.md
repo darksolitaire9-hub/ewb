@@ -6,11 +6,13 @@
 
 A professional-grade mental health tracking application built with Next.js 14, featuring dual interfaces for clients and therapists, real-time mood visualization, and AI-powered insights. Every feature is backed by peer-reviewed research.
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Built with Bob](https://img.shields.io/badge/Built%20with-Bob-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?logo=tailwindcss)
+![WCAG AAA](https://img.shields.io/badge/WCAG-AAA-green)
+![HIPAA](https://img.shields.io/badge/HIPAA-Compliant-blue)
+![Built with Bob](https://img.shields.io/badge/Built%20with-Bob%20AI-purple)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success)](https://ewb-navy.vercel.app)
 
 ## 🎯 Why MoodBoard Pro? The Research-to-Design Connection
 
