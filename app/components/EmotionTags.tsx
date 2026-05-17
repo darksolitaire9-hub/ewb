@@ -34,43 +34,77 @@ export default function EmotionTags({ selectedEmotions, onChange, disabled = fal
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-3">
-        How are you feeling? (Select all that apply)
-      </label>
-      
-      <div className="flex flex-wrap gap-2">
-        {availableEmotions.map((emotion) => {
-          const isSelected = selectedEmotions.includes(emotion.name);
-          
-          return (
-            <button
-              key={emotion.name}
-              onClick={() => toggleEmotion(emotion.name)}
-              disabled={disabled}
-              className={`
-                px-4 py-2 rounded-full text-sm font-medium border-2 transition-all
-                ${isSelected 
-                  ? `${emotion.color} scale-105 shadow-md` 
-                  : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
-                }
-                ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:scale-105'}
-              `}
-            >
-              {emotion.name}
-              {isSelected && (
-                <span className="ml-1 font-bold">✓</span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+      <fieldset>
+        <legend className="block text-sm font-medium text-gray-700 mb-3" id="emotion-tags-label">
+          How are you feeling? (Select all that apply)
+        </legend>
+        
+        {/* Screen reader announcement */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {selectedEmotions.length > 0
+            ? `${selectedEmotions.length} emotion${selectedEmotions.length > 1 ? 's' : ''} selected: ${selectedEmotions.join(', ')}`
+            : 'No emotions selected yet. Please select at least one emotion.'}
+        </div>
+        
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-labelledby="emotion-tags-label"
+          aria-describedby="emotion-tags-description"
+        >
+          {availableEmotions.map((emotion) => {
+            const isSelected = selectedEmotions.includes(emotion.name);
+            
+            return (
+              <button
+                key={emotion.name}
+                type="button"
+                onClick={() => toggleEmotion(emotion.name)}
+                disabled={disabled}
+                role="checkbox"
+                aria-checked={isSelected}
+                aria-label={`${emotion.name}${isSelected ? ', selected' : ', not selected'}`}
+                className={`
+                  px-4 py-2 rounded-full text-sm font-medium border-2 transition-all
+                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                  ${isSelected
+                    ? `${emotion.color} scale-105 shadow-md`
+                    : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400'
+                  }
+                  ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:scale-105'}
+                `}
+              >
+                {emotion.name}
+                {isSelected && (
+                  <span className="ml-1 font-bold" aria-hidden="true">✓</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+        
+        {/* Hidden description for screen readers */}
+        <div id="emotion-tags-description" className="sr-only">
+          Select one or more emotions that describe how you're feeling. Use Space or Enter to toggle selection.
+        </div>
+      </fieldset>
 
       {selectedEmotions.length > 0 && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div
+          className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+          role="status"
+          aria-label="Selected emotions summary"
+        >
           <p className="text-sm text-blue-800">
             <span className="font-semibold">Selected:</span>{' '}
             {selectedEmotions.join(', ')}
           </p>
+        </div>
+      )}
+      
+      {selectedEmotions.length === 0 && (
+        <div className="mt-2 text-sm text-gray-500" role="alert" aria-live="polite">
+          Please select at least one emotion to continue
         </div>
       )}
     </div>
