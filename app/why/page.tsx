@@ -416,11 +416,13 @@ export default function WhyPage() {
             >
               ❓ Read the FAQ
             </a>
-            <a 
-              href="docs/RESEARCH_TO_DESIGN_RATIONALE.md" 
+            <a
+              href="https://github.com/darksolitaire9-hub/ewb/blob/master/docs/RESEARCH_TO_DESIGN_RATIONALE.md"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
             >
-              🎯 Technical Details
+              🎯 Technical Details (GitHub)
             </a>
           </div>
         </section>

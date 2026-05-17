@@ -111,10 +111,12 @@ export default function Home() {
                    View 28 Research Citations
                 </a>
                 <a
-                  href="docs/RESEARCH_TO_DESIGN_RATIONALE.md"
+                  href="https://github.com/darksolitaire9-hub/ewb/blob/master/docs/RESEARCH_TO_DESIGN_RATIONALE.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                 >
-                  🎯 Technical Details
+                  🎯 Technical Details (GitHub)
                 </a>
               </div>
             </div>
