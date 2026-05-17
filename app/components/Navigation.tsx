@@ -1,21 +1,25 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, BookOpen, HelpCircle, Github } from 'lucide-react';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, BookOpen, HelpCircle, Github } from "lucide-react";
 
 export default function Navigation() {
   const pathname = usePathname();
-  
+
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/why', label: 'Why This App?', icon: HelpCircle },
-    { href: '/research', label: 'Research', icon: BookOpen },
-    { href: '/faq', label: 'FAQ', icon: HelpCircle },
+    { href: "/", label: "Home", icon: Home },
+    { href: "/why", label: "Why This App?", icon: HelpCircle },
+    { href: "/research", label: "Research", icon: BookOpen },
+    { href: "/faq", label: "FAQ", icon: HelpCircle },
   ];
 
   return (
-    <nav className="bg-white shadow-md mb-6" role="navigation" aria-label="Main navigation">
+    <nav
+      className="bg-white shadow-md mb-6"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -33,27 +37,27 @@ export default function Navigation() {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
-              
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                     isActive
-                      ? 'bg-primary-600 text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? "bg-primary-600 text-white shadow-md"
+                      : "text-gray-600 hover:bg-gray-100"
                   }`}
-                  aria-current={isActive ? 'page' : undefined}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   <Icon size={18} aria-hidden="true" />
                   <span className="hidden sm:inline">{item.label}</span>
                 </Link>
               );
             })}
-            
+
             {/* GitHub Link */}
             <a
-              href="https://github.com/moodboardpro"
+              href="https://github.com/darksolitaire9-hub/ewb"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500"

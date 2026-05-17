@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ViewMode } from '@/lib/types';
-import ClientView from './components/ClientView';
-import TherapistView from './components/TherapistView';
-import Navigation from './components/Navigation';
-import { Users, User, Award } from 'lucide-react';
+import { useState } from "react";
+import { ViewMode } from "@/lib/types";
+import ClientView from "./components/ClientView";
+import TherapistView from "./components/TherapistView";
+import Navigation from "./components/Navigation";
+import { Users, User, Award } from "lucide-react";
 
 export default function Home() {
-  const [viewMode, setViewMode] = useState<ViewMode>('client');
+  const [viewMode, setViewMode] = useState<ViewMode>("client");
 
   return (
     <main className="min-h-screen bg-gray-50">
       <Navigation />
-      
+
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8 animate-fade-in">
@@ -32,32 +32,35 @@ export default function Home() {
               </p>
               <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                 <Award size={16} className="text-green-600" />
-                <span>WCAG 2.1 AAA Accessible • HIPAA Compliant • 28 Research Citations</span>
+                <span>
+                  WCAG 2.1 AAA Accessible • HIPAA Compliant • 28 Research
+                  Citations
+                </span>
               </div>
             </div>
-            
+
             {/* View Toggle */}
             <div className="flex gap-2 bg-white rounded-lg p-1 shadow-md">
               <button
-                onClick={() => setViewMode('client')}
+                onClick={() => setViewMode("client")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  viewMode === 'client'
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'text-gray-600 hover:bg-gray-100'
+                  viewMode === "client"
+                    ? "bg-primary-600 text-white shadow-md"
+                    : "text-gray-600 hover:bg-gray-100"
                 }`}
-                aria-pressed={viewMode === 'client'}
+                aria-pressed={viewMode === "client"}
               >
                 <User size={20} aria-hidden="true" />
                 Client View
               </button>
               <button
-                onClick={() => setViewMode('therapist')}
+                onClick={() => setViewMode("therapist")}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-                  viewMode === 'therapist'
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'text-gray-600 hover:bg-gray-100'
+                  viewMode === "therapist"
+                    ? "bg-primary-600 text-white shadow-md"
+                    : "text-gray-600 hover:bg-gray-100"
                 }`}
-                aria-pressed={viewMode === 'therapist'}
+                aria-pressed={viewMode === "therapist"}
               >
                 <Users size={20} aria-hidden="true" />
                 Therapist View
@@ -70,31 +73,48 @@ export default function Home() {
         <div className="mb-8 bg-gradient-to-r from-primary-50 to-blue-50 rounded-xl p-6 shadow-md border border-primary-100 animate-fade-in">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center">
-              <span className="text-2xl" role="img" aria-label="lightbulb">💡</span>
+              <span className="text-2xl" role="img" aria-label="lightbulb">
+                💡
+              </span>
             </div>
             <div className="flex-1">
               <h2 className="text-xl font-bold text-primary-900 mb-2">
                 Why MoodBoard Pro?
               </h2>
               <p className="text-gray-700 mb-3">
-                <strong>Because research shows what works, but existing apps ignore the research.</strong>
+                <strong>
+                  Because research shows what works, but existing apps ignore
+                  the research.
+                </strong>
               </p>
-              <div className="grid md:grid-cols-2 gap-3 text-sm">
+              <div className="grid md:grid-cols-2 gap-3 text-sm  text-gray-800 ">
                 <div className="flex items-start gap-2">
                   <span className="text-green-600 font-bold">✓</span>
-                  <span><strong>Visual tracking:</strong> 23% higher engagement (Kauer et al., 2012)</span>
+                  <span>
+                    <strong>Visual tracking:</strong> 23% higher engagement
+                    (Kauer et al., 2012)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-green-600 font-bold">✓</span>
-                  <span><strong>Therapist tools:</strong> 78% want this, only 2% of apps have it</span>
+                  <span>
+                    <strong>Therapist tools:</strong> 78% want this, only 2% of
+                    apps have it
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-green-600 font-bold">✓</span>
-                  <span><strong>Accessibility:</strong> WCAG AAA (96.8% of health sites fail)</span>
+                  <span>
+                    <strong>Accessibility:</strong> WCAG AAA (96.8% of health
+                    sites fail)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-green-600 font-bold">✓</span>
-                  <span><strong>Better outcomes:</strong> 31% improvement with digital tracking</span>
+                  <span>
+                    <strong>Better outcomes:</strong> 31% improvement with
+                    digital tracking
+                  </span>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap gap-3">
@@ -108,11 +128,10 @@ export default function Home() {
                   href="/research"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-white text-primary-700 border border-primary-300 rounded-lg hover:bg-primary-50 transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
-                   View 28 Research Citations
+                  View 28 Research Citations
                 </a>
                 <a
-                  href="https://github.com/darksolitaire9-hub/ewb/blob/master/docs/RESEARCH_TO_DESIGN_RATIONALE.md"
-                  target="_blank"
+                  href="/rationale"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                 >
@@ -125,7 +144,7 @@ export default function Home() {
 
         {/* Main Content */}
         <div className="animate-fade-in">
-          {viewMode === 'client' ? <ClientView /> : <TherapistView />}
+          {viewMode === "client" ? <ClientView /> : <TherapistView />}
         </div>
 
         {/* Footer */}
